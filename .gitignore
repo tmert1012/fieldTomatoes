@@ -1,5 +1,31 @@
-# Ignore Gradle project-specific cache directory
-.gradle
+# idea
+/.idea/
+cmake-build-debug/
+/out/
+.idea_modules/
+*.iws
+*.iml
+*.ipr
 
-# Ignore Gradle build output directory
-build
+# java
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+
+# gradle
+.gradle
+/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+/gradle/
+gradlew
+gradlew.bat
