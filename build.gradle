@@ -1,0 +1,44 @@
+buildscript {
+    ext.kotlin_version = '1.3.21'
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'java'
+apply plugin: 'idea'
+
+def projectTitle = 'fieldTomatoes'
+def projectVersion = '1.0'
+def mainClassName = 'io.apuno.fieldTomatoes.FieldTomatoes'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    
+    manifest {
+        attributes 'Implementation-Title': projectTitle,
+            'Implementation-Version': projectVersion,
+            'Main-Class': mainClassName
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
