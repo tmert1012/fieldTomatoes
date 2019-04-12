@@ -81,10 +81,10 @@ class Game {
             ---------------
 
             Weather for this week:
-                ${ week.dailyWeather.joinToString(DELIMINATOR) { w -> w.displayName } }
+                ${ week.dailyWeather.joinToString(DELIMINATOR) { w -> " ${w.displayName}" }.trimStart() }
 
             Options:
-                ${ Option.values().joinToString(DELIMINATOR) { o -> "${o.displayName} [${o.id}] " } }
+                ${ Option.values().joinToString(DELIMINATOR) { o -> " ${o.displayName} [${o.id}]" } }
 
             Please select seven options for this week ([1-7] comma separated):
         """.trimIndent())
@@ -100,6 +100,7 @@ class Game {
             when (weather) {
                 Weather.RAIN -> lastRainOn = dayOfWeek
                 Weather.OVERCAST -> lastOvercastOn = dayOfWeek
+                else -> {}
             }
 
             // overcast followed by a day of rain
