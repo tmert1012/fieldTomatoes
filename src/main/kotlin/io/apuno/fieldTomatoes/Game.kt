@@ -4,7 +4,7 @@ class Game {
 
     val WEEKS_IN_SEASON = 16
     val DELIMINATOR = ","
-    val DEBUG = false
+    val DEBUG = true
 
     fun run() {
 
@@ -28,11 +28,13 @@ class Game {
                 println(week)
 
             // check for bad weather
-            if (haveBadWeather(week)) {
+            if (haveBadWeather(week) || badOptions(week)) {
                 println("\nYou've lost! Try again :(\n")
                 return
             }
         }
+
+        println("You've won!!")
 
     }
 
@@ -82,7 +84,7 @@ class Game {
 
             Weather for this week:
                 ${ week.dailyWeather.joinToString(DELIMINATOR) { w -> " ${w.displayName}" }.trimStart() }
-
+️
             Options:
                 ${ Option.values().joinToString(DELIMINATOR) { o -> " ${o.displayName} [${o.id}]" } }
 
@@ -112,8 +114,32 @@ class Game {
         return false
     }
 
+    private fun badOptions(week: Week): Boolean {
+
+        // trim too early
+        if (week.options.contains(Option.TRIM) && week.weekNumber < 3)
+            return true
+
+        // over fertilize
+        if (week.options.filter { o -> o == Option.FERTILIZE }.size > 2)
+            return true
+
+        // too wet
+        if ((week.options.filter { it == Option.WATER }.size + week.dailyWeather.filter { it == Weather.RAIN }.size) > 3)
+            return false
+
+        return false
+    }
+
     private fun getRandomWeather(): Weather {
-        return Weather.values()[(0..2).random()]
+        val values = ArrayList<Weather>()
+        values.add(Weather.SUN)
+        values.add(Weather.SUN)
+        values.add(Weather.SUN)
+        values.add(Weather.RAIN)
+        values.add(Weather.OVERCAST)
+
+        return values[(0..values.size-1).random()]
     }
 
     class Week(val weekNumber: Int) {
