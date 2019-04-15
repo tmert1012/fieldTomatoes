@@ -6,6 +6,8 @@ class Game {
     val DELIMINATOR = ","
     val DEBUG = true
 
+    val season = Season()
+
     fun run() {
 
         displayIntro()
@@ -24,14 +26,20 @@ class Game {
             // save options
             week.options.addAll( parseOptions(readLine()!!) )
 
+            // check for bugs
+            sprayCheck(week)
+
             if (DEBUG)
                 println(week)
 
             // check for bad weather
-            if (haveBadWeather(week) || badOptions(week)) {
+            if (haveBadWeather(week) || badOptions(week) || season.pestCount() > 2) {
                 println("\nYou've lost! Try again :(\n")
                 return
             }
+
+            season.weeks.add(week)
+
         }
 
         println("You've won!!")
@@ -69,8 +77,11 @@ class Game {
             values.add(input)
 
         // validate and popuplate options
-        for (value in values)
-            options.add( Option.values().first { it.id == value.toInt() } )
+        for (value in values) {
+            val goodOption = Option.values().find { it.id == value.toInt() }
+            if (goodOption != null)
+                options.add(goodOption)
+        }
 
         return options
     }
@@ -88,7 +99,7 @@ class Game {
             Options:
                 ${ Option.values().joinToString(DELIMINATOR) { o -> " ${o.displayName} [${o.id}]" } }
 
-            Please select seven options for this week ([1-7] comma separated):
+            Please select seven options for this week ([1-6] comma separated):
         """.trimIndent())
 
     }
@@ -128,7 +139,25 @@ class Game {
         if ((week.options.filter { it == Option.WATER }.size + week.dailyWeather.filter { it == Weather.RAIN }.size) > 3)
             return false
 
+        // not enough weeding
+        if (!week.options.contains(Option.WEED))
+            return true
+
         return false
+    }
+
+    private fun sprayCheck(week: Week) {
+
+        // add pest if we didn't spray
+        if (!week.options.contains(Option.SPRAY)) {
+            println("didn't spray")
+            week.pests.add(Pest.values()[(0..2).random()])
+        }
+        else {
+            println("did spray")
+            week.pests.removeAt(week.pests.lastIndex)
+        }
+
     }
 
     private fun getRandomWeather(): Weather {
@@ -145,9 +174,28 @@ class Game {
     class Week(val weekNumber: Int) {
         val dailyWeather = ArrayList<Weather>()
         val options = ArrayList<Option>()
+        val pests = ArrayList<Pest>()
 
         override fun toString(): String {
-            return "\nWeek(weekNumber=$weekNumber, dailyWeather=$dailyWeather, options=$options)\n"
+            return "\nWeek(weekNumber=$weekNumber, dailyWeather=$dailyWeather, options=$options, pests=$pests\n"
+        }
+    }
+
+    class Season {
+        val weeks = ArrayList<Week>()
+
+        fun pestCount(): Int {
+            var count = 0
+
+            for (week in weeks) {
+                count += week.pests.size
+            }
+
+            return count
+        }
+
+        override fun toString(): String {
+            return "\nSeason(weeks=$weeks)\n"
         }
     }
 
@@ -164,6 +212,12 @@ class Game {
         FERTILIZE(4, "Fertilize"),
         TRELLIS(5, "Trellis"),
         SPRAY(6, "Spray");
+    }
+
+    enum class Pest(val id: Int, val displayName: String) {
+        SQUASH_BUG(1, "Squash Bug"),
+        SPIDER_MITE(2, "Spider Mite"),
+        APHID(3, "Aphid")
     }
 }
 
