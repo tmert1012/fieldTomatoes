@@ -4,7 +4,7 @@ class Game {
 
     val WEEKS_IN_SEASON = 16
     val DELIMINATOR = ","
-    val DEBUG = true
+    val DEBUG = false
 
     val season = Season()
 
@@ -47,17 +47,17 @@ class Game {
     }
 
     private fun displayIntro() {
+
         println("""
 
-            Field Tomatoes!
-            ---------------
+        Field Tomatoes!
+        ---------------
 
-            Goal: To make it through the season without losing your crop!
+        Goal: To make it through the season without losing your crop!
 
-            Game play: Make a work schedule for each week, based on the weather forecast. Try and figure out the weather and work combo to make it to the end!
+        Game play: Make a work schedule for each week, based on the weather forecast. Try and figure out the weather and work combo to make it to the end!
 
-            Have fun, good luck!
-
+        Have fun, good luck!
 
         """.trimIndent())
     }
@@ -90,16 +90,16 @@ class Game {
 
         println("""
 
-            Week ${week.weekNumber}
-            ---------------
+        Week ${week.weekNumber}
+        ---------------
 
-            Weather for this week:
-                ${ week.dailyWeather.joinToString(DELIMINATOR) { w -> " ${w.displayName}" }.trimStart() }
-️
-            Options:
-                ${ Option.values().joinToString(DELIMINATOR) { o -> " ${o.displayName} [${o.id}]" } }
+        Weather for this week:
+            ${ week.dailyWeather.joinToString(DELIMINATOR) { w -> " ${w.displayName}" }.trimStart() }
 
-            Please select seven options for this week ([1-6] comma separated):
+        Options:
+            ${ Option.values().joinToString(DELIMINATOR) { o -> " ${o.displayName} [${o.id}]" } }
+
+        Please select seven options for this week ([1-6] comma separated):
         """.trimIndent())
 
     }
@@ -150,11 +150,9 @@ class Game {
 
         // add pest if we didn't spray
         if (!week.options.contains(Option.SPRAY)) {
-            println("didn't spray")
             week.pests.add(Pest.values()[(0..2).random()])
         }
         else {
-            println("did spray")
             week.pests.removeAt(week.pests.lastIndex)
         }
 
